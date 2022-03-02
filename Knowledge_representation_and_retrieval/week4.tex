@@ -1,0 +1,168 @@
+\section{Week 4: More ASP features}
+
+{\Large \textbf{\textcolor{Maroon}{More convenient way to sum and max}}}: \\
+\textbf{Logic Program}:
+\begin{lstlisting}
+#const k=4. num(1,5). num(2,2). num(3,6). num(4,2).
+
+sum(S) :- S = #sum { N, num(I,N) : num(I, N) }
+max(S) :- M = #max { N, num(I,N) : num(I, N) }
+
+#sum/1. #max/1.
+\end{lstlisting}
+
+\vspace{0.25cm}
+
+\textbf{Projected answer sets:}
+\begin{lstlisting}
+sum(15) max(6)
+\end{lstlisting}
+
+\vspace{0.35cm}
+
+{\Large \textbf{\textcolor{Maroon}{Min and count}} (count is unique, other\_count not)}:
+\begin{lstlisting}
+#const k=4. num(1,5). num(2,2). num(3,6). num(4,2).
+
+min(S) :- S = #min { N, num(I,N) : num(I, N) }
+count(S) :- S = #count { N : num(I,N) }
+other_count(S) :- S = #count { N, num(I,N) : num(I, N) }
+
+
+#min/1. #count/1. #other_count/1.
+\end{lstlisting}
+
+\vspace{0.25cm}
+
+\textbf{Projected answer sets:}
+\begin{lstlisting}
+min(2) count(3) other_count(4)
+\end{lstlisting}
+
+\newpage
+
+{\Large \textbf{\textcolor{Maroon}{Computing degree of a graph}}}: \\
+Suppose we have an \textcolor{MidnightBlue}{undirected graph $G = (V,E)$}, represented as follows:
+\begin{lstlisting}
+node(1..5).
+edge(1,2). edge(1,3). edge(2,4).
+...
+edge(X,Y) :- edge(Y,X).
+\end{lstlisting}
+
+\begin{itemize}
+    \item The \textcolor{Maroon}{degree of a node} in the \textcolor{MidnightBlue}{graph} is the number of nodes that it is connected to.
+    \item The \textcolor{Maroon}{degree of the} \textcolor{MidnightBlue}{graph} is the maximum degree of any node in the graph.
+\end{itemize}
+
+\textbf{2 ways}: 
+\begin{lstlisting}
+degree(N, D) :- node(N), D = #count { M : edge(N, M) }
+degree(D) :- D = #max { E : degree(N,E), node(N) }
+\end{lstlisting}
+\textbf{Alternative correct way}: 
+\begin{lstlisting}
+degree(N, D) :- node(N), D = #count {edge(N,M) : edge(N, M) }
+degree(D) :- D = #max { E : degree(N,E) }
+\end{lstlisting}
+
+\vspace{0.35cm}
+
+\textbf{\textcolor{Maroon}{Warning} on using aggregates}: \\
+They are translated by clingo to rules involving regular predicates. The larger the numbers involved, the more rules are needed for the translation, which takes a lot of memory (impacts efficiency of solver). Only use if \textcolor{Maroon}{other constructions provide no solution}.
+
+\subsection{Optimization}
+These statements allow to select between different answer sets. Where we can express what is to be \textcolor{MidnightBlue}{maximized} or \textcolor{MidnightBlue}{minimized}. \textcolor{Maroon}{Optimal answer sets} are those that \textcolor{MidnightBlue}{maximize} or \textcolor{MidnightBlue}{minimize} this criterion.
+
+\vspace{0.35cm}
+
+\begin{lstlisting}
+#minimize { N : something(N) }
+\end{lstlisting}
+expresses that the sum of all N is to be minimized for which something(N) is true (similarly for \#maximize).\\
+\\
+\textcolor{Maroon}{Be careful}: the part after \#minimize/\#maximize is a \textcolor{Maroon}{set}. So they do not contain duplicates (only counted once). For example:
+\begin{lstlisting}
+item(1..3).
+cost(1,3). cost(2,3). cost(3,2).
+2 { choose(I) : item(I) } 2.
+#minimize { C,I : choose(I), cost(I,C) }
+\end{lstlisting}
+
+\vspace{0.25cm}
+
+\textbf{Projected answer sets:}
+\begin{lstlisting}
+choose(1) choose(3)
+choose(2) choose(3)
+\end{lstlisting}
+
+\newpage
+
+{\Large \textbf{\textcolor{Maroon}{Finding all minimum-size dominating sets of an undirected graph G}}}: \\
+\\
+A \textcolor{Maroon}{dominating set} of an \textcolor{MidnightBlue}{undirected graph $G = (V,E)$} is a subset $D \subseteq V$ of nodes that \textcolor{Maroon}{dominates} all nodes in the graph: for each $v \in V$ either (1) $v \in D$ or (2) $\{u,v\} \in E$ for some $u \in D$. \\
+\\
+\textbf{Using the 4 steps again} (with an addition of \textcolor{Maroon}{optimization}): 
+\begin{enumerate}
+    \item \textbf{Formalize the problem}
+    \item \textbf{Encoding of problem instances}:
+    \begin{enumerate}
+        \item State the nodes of the graph using node/1, e.g.:
+        \begin{lstlisting}
+        node(1..5).
+        \end{lstlisting}
+        \item State the edges of the graph using edge/2, e.g.:
+        \begin{lstlisting}
+        edge(1,2). edge(1,3). edge(2,4).
+        \end{lstlisting}
+        \item State that all edges are also reversed:
+        \begin{lstlisting}
+        edge(X,Y) :- edge(Y,X).
+        \end{lstlisting}
+    \end{enumerate}
+    \item \textbf{Encoding of candidate solutions (\textcolor{MidnightBlue}{generate}}):
+    \begin{enumerate}
+        \item Use a choice rule to generate all subsets of nodes, using choose/1:
+        \begin{lstlisting}
+        { choose(N) : node(N) }.
+        \end{lstlisting}
+    \end{enumerate}
+    \item \textbf{Encoding of solution properties (\textcolor{MidnightBlue}{test}}):
+    \begin{enumerate}
+        \item Define when a node is \textcolor{PineGreen}{dominated}:
+        \begin{lstlisting}
+        dominated(N) :- choose(N).
+        dominated(N) :- choose(M), edge(N,M).
+        \end{lstlisting}
+        \item Require that there are  \textcolor{PineGreen}{no undominated} nodes:
+        \begin{lstlisting}
+        :- node(N), not dominated(N).
+        \end{lstlisting}
+    \end{enumerate}
+    \item \textbf{Add \textcolor{Maroon}{optimization} statements}:
+    \item Define when a node is \textcolor{PineGreen}{dominated}:
+        \begin{lstlisting}
+        #minimize { 1, choose(N) : choose(N) }
+        \end{lstlisting}
+\end{enumerate}
+
+\newpage
+
+{\Large \textbf{\textcolor{Maroon}{Recursion}}}: \\
+\\
+Suppose we have an \textcolor{MidnightBlue}{undirected graph $G = (V,E)$}, represented as follows:
+\begin{lstlisting}
+node(1..5).
+edge(1,2). edge(1,3). edge(2,4).
+...
+edge(X,Y) :- edge(Y,X).
+\end{lstlisting}
+
+\vspace{0.35cm}
+
+Always start by having a \textbf{basecase}. Check whether a node is reachable from another, by some path (\textbf{\textcolor{Maroon}{recursively}}):
+\begin{lstlisting}
+reachable(N,N) :- node(N).
+reachable(N,M2) :- reachable(N,M1), edge(M1,M2).
+\end{lstlisting}

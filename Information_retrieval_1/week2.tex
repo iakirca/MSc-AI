@@ -1,0 +1,163 @@
+\section{Week 2: Evaluation}
+\textbf{\textcolor{Maroon}{Evaluation}} is the key to making progress in building better search engines.\\
+\\
+What is \textcolor{Maroon}{different} about \textcolor{Maroon}{evaluation} in IR? Many possible queries (cannot be enumerated) and documents (most cannot be judged) and expect good “zero-shot” performance.
+
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item \textbf{\textcolor{OrangeRed}{Boolean retrieval}}: considers only whether a document is relevant
+    \begin{itemize}
+        \item Does not estimate a \textbf{degree} of relevance (i.e., no ranking)
+        \item Acceptable for some use cases, especially recall oriented
+        \item Limitations for large result sets
+    \end{itemize}
+    \item \textbf{\textcolor{PineGreen}{Ranked retrieval}}: sorts (ranks) documents by estimated relevance
+    \begin{itemize}
+        \item Relevance score estimated for each document
+        \item Common setting (e.g., Web search)
+        \item No expectation that user consumes entire ranked list
+        \item Evaluation metrics characterize different trade-offs
+    \end{itemize}
+\end{itemize}
+\vspace{0.2cm}
+
+\textbf{Outline} \textbf{\textcolor{NavyBlue}{offline evaluation}}:
+\subsection{Test collections}
+\begin{itemize}
+    \item \textbf{Components of test collections}
+    \begin{itemize}
+        \item \textbf{\textcolor{Plum}{Test documents}}: repr. for appl. in terms of the nr., size, and type.
+        \item \textbf{\textcolor{Plum}{Test queries}}: Queries from pot. users (query log). More is better, at least 50.
+        \item \textbf{\textcolor{Plum}{Ground Truth/Relevance judgements}}: Search result relevant?
+        \begin{itemize}
+            \item \textcolor{Mulberry}{Where to get}: users, independent judges, crowdsourcing.
+            \item \textcolor{Mulberry}{How many}: more the better. More judged queries, fewer judgements per query. Multiple judges.
+            \item \textcolor{Mulberry}{Graded relevance}: 4 - perfect, 3 - excellent, 2 - good, 1 - fair,  0 - bad.
+        \end{itemize}
+        \item \textbf{\textcolor{Maroon}{But, impossible to obtain judgements for all documents. So:}} \\
+        \textbf{\textcolor{PineGreen}{Depth-k pooling}}: Produces a large number of judgments for each query
+        \begin{enumerate}
+            \item consider multiple search systems (by participants)
+            \item consider top-k results from each system
+            \item remove duplicates
+            \item present documents to judges in a random order
+        \end{enumerate}
+        \item still \textbf{\textcolor{PineGreen}{incomplete}}.
+        \item \textbf{\textcolor{MidnightBlue}{Multiple assessors}}
+        \begin{itemize}
+            \item \textbf{Inter-assessor agreement}, Cohen's kappa coefficient: \\
+            % \centering
+            $$\kappa = \frac{P(A) - P(E)}{1 - P(E)} \;\;\;\;\;\;\; P(E) = \text{Expected chance agreement}$$ 
+            \item Values:
+            \begin{itemize}
+                \item[$\circ$] $>$ 0.8: high
+                \item[$\circ$] 0.67 - 0.8: acceptable
+                \item[$\circ$] $<$ 0.67: low
+            \end{itemize}
+            \item For more than two assessors, average pair-wise coefficients
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Evaluation campaigns}
+    \begin{itemize}
+        \item Text REtrieval Conference (TREC)
+        \item Cross-Language Education and Function (CLEF)
+        \item NII Test Collections for IR (NTCIR)
+    \end{itemize}
+\end{itemize}
+\subsection{Metrics}
+\begin{itemize}
+    \item \textbf{Unranked evaluation}
+    \begin{itemize}
+        \item \textbf{\textcolor{Maroon}{Precision}}: is the fraction of retrieved items that are relevant \\
+        $$\text{\textcolor{Maroon}{Precision}} = \frac{\text{\#(relevant items retrieved)}}{\text{\#(retrieved items)}} = \frac{\text{TP}}{\text{TP + FP}}$$
+        \item \textbf{\textcolor{OrangeRed}{Recall}}: is the fraction of relevant items that are retrieved \\
+        $$\text{\textcolor{OrangeRed}{Recall}} = \frac{\text{\#(relevant items retrieved)}}{\text{\#(relevant items)}} = \frac{\text{TP}}{\text{TP + FN}}$$
+        \\
+        \begin{tabular}{l|ll}
+        \hline & \textbf{Relevant} & \textbf{Non-relevant} \\
+        \hline \textbf{Retrieved} & true positives (TP) & false positives (FP) \\
+        \textbf{Not retrieved} & false negatives (FN) & true negatives (TN) \\
+        \hline
+        \end{tabular}
+        \vspace{0.2cm}
+        \item \textbf{\textcolor{JungleGreen}{F-measure}} \\
+        $$F=\frac{1}{\alpha \frac{1}{P}+(1-\alpha) \frac{1}{R}}=\frac{\left(\beta^{2}+1\right) P R}{\beta^{2} P+R} \;\;\;\;\; \text{where} \;\;\;\; \beta^2 = \frac{1 - \alpha}{\alpha}$$ 
+        \item \textbf{\textcolor{OliveGreen}{F1-measure $(\alpha = 0.5, \beta^2 = 1)$}} \\
+        $$F_{1}=\frac{2 P R}{P+R}$$
+        \item \textbf{\textcolor{Maroon}{Ranking of items is not taken into account!}}
+    \end{itemize}
+    \item \textbf{Ranked evaluation}
+    \begin{itemize}
+        \item{\makebox[6cm]{\textbf{\textcolor{Maroon}{Precision}} at rank $k$\hfill} $P@k = \frac{\text{\#(relevant items at k)}}{k}$}
+        \item{\makebox[6cm]{\textbf{\textcolor{OrangeRed}{Recall}} at rank $k$\hfill} $R@k = \frac{\text{\#(relevant items at k)}}{\text{\#(relevant items)}}$}
+        \item{\makebox[6cm]{\textbf{\textcolor{Violet}{Reciprocal rank (RR)}}\hfill} $RR = \frac{1}{\text{rank of first relevant item}}$}
+        \item{\makebox[6cm]{\textbf{\textcolor{Cerulean}{Average precision (AP)}}\hfill} $A P=\frac{\sum_{d \in r e l} P @ k_{d}}{\#(\text { relevant items })}$}
+        \item \textbf{Average over multiple queries} \\
+        \\
+        \begin{minipage}{.2\textwidth}
+        \begin{itemize}
+            \setlength\itemsep{0em}
+            \item mean $P@k$
+            \item mean $R@k$
+        \end{itemize}
+        \end{minipage}
+        \begin{minipage}{.2\textwidth}
+        \begin{itemize}
+            \setlength\itemsep{0em}
+            \item MRR
+            \item MAP
+        \end{itemize}
+        \end{minipage}
+        \vspace{0.2cm}
+        \item \textbf{\textcolor{Maroon}{User search behavior is not taken into account!}}
+    \end{itemize}
+    \vspace{0.2cm}
+    \item \textbf{User-oriented evaluation}
+    \begin{itemize}
+        \item \textbf{\textcolor{OrangeRed}{Discounted cumulative gain (DCG)}}
+        \begin{itemize}
+            \item{\makebox[6cm]{\text{Graded relevance}\hfill} $R_k \in \{0,1,2,3,4\}$}
+            \item{\makebox[6cm]{\textcolor{OrangeRed}{Cumulative Gain}:\hfill} $CG = \sum^N_{k=1}(2^{R_k} - 1)$}
+            \item{\makebox[6cm]{Gain is \textcolor{OrangeRed}{discounted} by rank:\hfill} $D(k) = \frac{1}{\log(k+1)}$}
+            \item{\makebox[6cm]{Discounted cumulative gain:\hfill} $D C G=\sum_{k=1}^{N} \frac{2^{R_{k}}-1}{\log (k+1)}$}
+            \item{\makebox[6cm]{Normalized DCG:\hfill} $N D C G=\frac{D C G}{D C G_{i d e a l}}$}
+        \end{itemize}
+        \item \textbf{\textcolor{Emerald}{Rank-biased precision (RBP)}}
+        \begin{itemize}
+            \item{\makebox[7cm]{view next item with probability \hfill} $\theta$}
+            \item{\makebox[7cm]{stop with probability \hfill} $1 - \theta$}
+            \item{\makebox[7cm]{Probability of looking at rank $k$\hfill} $P(\text{look at } k) = \theta^{k-1}$}
+            \item Average number of examined items 
+            $$
+            \begin{aligned}
+            \text{Avg. exam} &=\sum_{k=1}^{\infty} k \cdot P(\text{look at } k) \cdot P(\text{stop at } k) \\
+            &=\sum_{k=1}^{\infty} k \cdot \theta^{k-1} \cdot(1-\theta) \;\;\; = \;\;\; \frac{1}{1-\theta}
+            \end{aligned}
+            $$
+            \item{\makebox[5cm]{Utility at rank $k$\hfill} $U@k =P(\text {look at } k) \cdot R_{k}=\theta^{k-1} \cdot R_{k}$}
+            \item Avg. utility of all results  
+            $$R B P=\frac{\sum_{k=1}^{N} U @ k}{\text { Avg. exam }}=(1-\theta) \cdot \sum_{k=1}^{N} \theta^{k-1} \cdot R_{k}$$
+            \item $\theta$ is usually close to 1
+        \end{itemize}
+        \newpage
+        \item \textbf{\textcolor{Sepia}{Expected reciprocal rank (ERR)}}
+        \begin{itemize}
+            \item{\makebox[7cm]{Reciprocal rank \hfill} $RR = \frac{1}{\text{rank of first relevant item}}$}
+            \item If an item is relevant $(R_k)$ then stop
+            \item Otherwise $(1 - R_k)$, continue with probability $\theta$
+            \item{\makebox[7cm]{Probability of looking at rank $k$\hfill} $P(\text {look at } k)=\prod_{i=1}^{k-1}\left(\left(1-R_{i}\right) \cdot \theta\right)$}
+            \item{\makebox[7cm]{Probability of reciprocal rank $= \frac{1}{k}$\hfill} $P\left(R R=\frac{1}{k}\right)=R_{k} \cdot \prod_{i=1}^{k-1}\left(\left(1-R_{i}\right) \cdot \theta\right)$}
+            \item Expected reciprocal rank
+            $$
+            \begin{aligned}
+            ERR &= \sum^N_{k=1} \frac{1}{k} \cdot P(RR = \frac{1}{k}) \\
+            &= \sum^N_{k=1} \frac{1}{k} \cdot \theta^{k-1} \cdot R_k \cdot \prod^{k-1}_{i=1} (1 - R_i)
+            \end{aligned}
+            $$
+            \item $\theta$ is usually close to 1
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+\newpage

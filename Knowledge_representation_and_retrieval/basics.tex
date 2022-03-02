@@ -1,0 +1,104 @@
+\section{Basics}
+
+\subsection{Symbols}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{\textcolor{red}{Symbol}} & \textbf{\textcolor{red}{Explanation}} \\
+\hline
+$\neg x$ & negation (not x) \\
+\hline
+$x \wedge y$ & conjunction (x and y) \\
+\hline
+$x \vee y$ & disjunction (x or y) \\
+\hline
+$x \rightarrow y$ \textbf{or} $x \supset y$ & conditional/implies (if x then y) \\
+\hline
+$x \leftrightarrow y$ \textbf{or} $x \equiv y$ & equivalence/iff (x if and only if y) \\
+\hline
+$a \models p$ & a satisfies p \\
+\hline 
+$\forall x$ & for all x \\
+\hline
+$\exists x$ & there exists x \\
+\hline
+$\exists !x$ & there is a unique x \\
+\hline
+\end{tabular}
+
+\vspace{1cm}
+
+\textbf{Truth tables:}
+\begin{table}[!htb]
+    \begin{minipage}{.1\linewidth}
+      \centering
+        \begin{tabular}{|l|l|}
+            \hline
+            \textcolor{red}{x} & $\neg(\text{\textcolor{red}{x}})$ \\
+            \hline 
+            F & T \\
+            \hline
+            T & F \\
+            \hline
+        \end{tabular}
+    \end{minipage}%
+    \begin{minipage}{.9\linewidth}
+      \centering
+        \begin{tabular}{| l | l | l | l | l | l |}
+            \hline
+            \textcolor{red}{x} & \textcolor{red}{y} & $\wedge($\textcolor{red}{x}, \textcolor{red}{y}$)$ & $\vee($\textcolor{red}{x}, \textcolor{red}{y}$)$ & $\rightarrow($\textcolor{red}{x}, \textcolor{red}{y}$)$ & $\leftrightarrow($\textcolor{red}{x}, \textcolor{red}{y}$)$ \\
+            \hline
+            F & F & F & F & T & T \\
+            F & T & F & T & T & F \\
+            T & F & F & T & F & F \\
+            T & T & T & T & T & T \\
+            \hline
+        \end{tabular}
+    \end{minipage} 
+\end{table}
+
+\subsection{Tautology and contradiction}
+\begin{table}[!htb]
+    \begin{minipage}{.5\linewidth}
+      \textbf{\textcolor{red}{Tautology}:} A compound proposition that is always true for all possible truth values of the propositions. \\ \textbf{Example:} $x \vee \neg x$ is a \textcolor{red}{tautology}.
+    \end{minipage}
+    \begin{minipage}{.5\linewidth}
+        \centering
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textcolor{red}{x} & $\neg($\text{\textcolor{red}{x}}$)$ & \textcolor{red}{x} $\vee$ $\neg$ \textcolor{red}{x} \\
+            \hline 
+            T & F & T \\
+            \hline
+            F & T & T \\
+            \hline
+        \end{tabular}
+    \end{minipage}
+\end{table}
+
+\begin{table}[!htb]
+    \begin{minipage}{.5\linewidth}
+      \textbf{\textcolor{PineGreen}{Contradiction}:} A compound proposition that is always false. \\ \textbf{Example:} $x \wedge \neg x$ is a \textcolor{PineGreen}{contradiction}.
+    \end{minipage}
+    \begin{minipage}{.5\linewidth}
+        \centering
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textcolor{red}{x} & $\neg($\text{\textcolor{red}{x}}$)$ & \textcolor{red}{x} $\wedge$ $\neg$ \textcolor{red}{x} \\
+            \hline 
+            T & F & F \\
+            \hline
+            F & T & F \\
+            \hline
+        \end{tabular}
+    \end{minipage}
+\end{table}
+
+\begin{table}[!htb]
+    \begin{minipage}{.5\linewidth}
+      \textbf{\textcolor{NavyBlue}{Contingency}:} A proposition that is \textbf{neither} a \textcolor{red}{tautology} nor \textcolor{PineGreen}{contradiction}.
+    \end{minipage}
+\end{table}
+
+
+
+\newpage
