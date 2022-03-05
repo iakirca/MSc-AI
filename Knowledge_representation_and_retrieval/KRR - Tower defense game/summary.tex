@@ -1,0 +1,59 @@
+\documentclass[11pt]{scrartcl} % Font size
+
+\usepackage{amsmath, amsfonts, amsthm} % Math packages
+\usepackage{graphicx} % Required for inserting images
+\usepackage[english]{babel}
+\setlength\parindent{0pt}
+\usepackage{amssymb}
+\usepackage{pifont}
+\newcommand{\xmark}{\ding{55}}
+\usepackage{listings}
+\lstset{
+  mathescape,         
+  literate={->}{$\rightarrow$}{2}
+           {ε}{$\varepsilon$}{1}
+}
+
+\usepackage{enumitem}
+
+% \def\ContinueLineNumber{\lstset{firstnumber=last}}
+
+
+% make section font another color
+% \usepackage{xcolor}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{sectsty}
+\sectionfont{\color{red}}
+\usepackage{wrapfig, booktabs}
+\usepackage{algorithm2e}
+\SetKwComment{Comment}{\# }{}
+\RestyleAlgo{ruled}
+\LinesNumbered
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\title{	
+	\textsc{KRR - A tower defense game}\\ % Your university, school and/or department name(s)
+}
+
+\author{\LARGE Isa-Ali Kirca} % Your name
+
+\date{} % Today's date (\today) or a custom date
+
+
+
+\begin{document}
+
+\maketitle % Print the title
+
+\input{tower_defense}
+
+\end{document}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
