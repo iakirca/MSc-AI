@@ -369,3 +369,123 @@
         \end{itemize}
     \end{itemize}
 \end{enumerate}
+
+\newpage
+
+\subsection{Semantic retrieval: Neural Models for ranking}
+
+\textbf{Taxonomy of approaches}: 
+\begin{figure}[ht!]
+    \includegraphics[scale=0.75]{figures/taxonomy.png}
+\end{figure}
+
+Soft matching enabled by \textbf{dense representations} (of terms, phrases, documents, ...).\\
+\\
+\textbf{Reranking}: 
+\begin{figure}[ht!]
+    \includegraphics[scale=0.75]{figures/reranking.png}
+\end{figure}
+
+\vspace{0.35cm}
+
+\textbf{Many \textcolor{Maroon}{Interaction based approaches} consume a \textit{similarity matrix} to predict a document's relevance (query-doc similarity matrix)}: 
+\begin{figure}[ht!]
+    \includegraphics[scale=0.75]{figures/sim_matrix.png}
+\end{figure}
+
+\newpage
+
+\textbf{State-of-the-art method \textcolor{Maroon}{KNRM}}:\\
+\textbf{Idea}: \textcolor{MidnightBlue}{kernel pooling} to characterize soft matches.
+
+\begin{enumerate}
+    \item Create similarity matrix ("translation matrix")
+    \item Apply Gaussian kernels to each row (query term)
+    
+    $$ K_k (M_i) = \sum_j \exp(- \frac{(M_{ij} - \mu_k)^2}{2\sigma^2_k}) $$
+    Where: \\
+    $M_{ij}$ is the similarity score. \\
+    $\mu$ is hyperparameter (place where histogram is centered at). \\
+    $\sigma$ is hyperparameter (how much can be included in that histogram).
+    \item Sum kernel scores across query terms
+    $$ \vec{K}\left(M_{i}\right)=\left\{K_{1}\left(M_{i}\right), \ldots, K_{K}\left(M_{i}\right)\right\} \quad \phi(M)=\sum_{i=1}^{n} \log \vec{K}\left(M_{i}\right) $$
+    \item Compute document with FFN
+    $$ f(q,d) = \tanh(w^t \phi(M) + b) $$
+    
+    Note: embeddings are trained along with model.
+\end{enumerate}
+
+\vspace{0.10cm}
+
+\textbf{\textcolor{Maroon}{Transformer (interaction) based approaches}}:
+
+\textbf{BERT's pretraining ingredients}: \\
+Transformer (encoder only) with lots of parameters + lots of text + lots of computation. \\
+\\
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/bert1.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/bert2.png}
+\end{minipage}
+
+\vspace{1cm}
+
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/bert3.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/bert4.png}
+\end{minipage}
+
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/bert5.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/bert6.png}
+\end{minipage}
+
+\vspace{1cm}
+
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/bert7.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/bert8.png}
+\end{minipage}
+
+\vspace{0.75cm}
+
+\textbf{\textcolor{Maroon}{Transformer (representation) based approaches}}: \\
+\textbf{We do not need to match exactly anymore}. \\
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/repr1.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/repr2.png}
+\end{minipage}
+
+\vspace{1cm}
+
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/repr3.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/repr4.png}
+\end{minipage}
+
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/repr5.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/repr6.png}
+\end{minipage}
+
+\vspace{1cm}
+
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/repr7.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\includegraphics[scale=0.5]{figures/repr8.png}
+\end{minipage}
